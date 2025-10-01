@@ -123,7 +123,7 @@ int aicwf_bus_init(uint bus_hdrlen, struct device *dev)
 
 #if 1
 	//waiting for rx/tx thread init finish
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 14, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
 	while(bus_if->busrx_thread->__state != TASK_INTERRUPTIBLE ||
 		bus_if->bustx_thread->__state != TASK_INTERRUPTIBLE)
 #else

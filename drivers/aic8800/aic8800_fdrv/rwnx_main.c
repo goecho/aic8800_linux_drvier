@@ -1948,7 +1948,7 @@ void aicwf_p2p_alive_timeout(struct timer_list *t)
     rwnx_vif = (struct rwnx_vif *)data;
     rwnx_hw = rwnx_vif->rwnx_hw;
     #else
-    rwnx_hw = from_timer(rwnx_hw, t, p2p_alive_timer);
+    rwnx_hw = container_of(t, struct rwnx_hw, p2p_alive_timer);
     rwnx_vif = rwnx_hw->p2p_dev_vif;
     #endif
 
@@ -2195,7 +2195,7 @@ static int rwnx_cfg80211_del_iface(struct wiphy *wiphy, struct wireless_dev *wde
 #if 0
 	if (rwnx_vif == rwnx_hw->p2p_dev_vif) {
 		if (timer_pending(&rwnx_hw->p2p_alive_timer)) {
-			del_timer_sync(&rwnx_hw->p2p_alive_timer);
+			timer_delete_sync(&rwnx_hw->p2p_alive_timer);
 		}
 	}
 #endif
@@ -2444,7 +2444,7 @@ static void rwnx_cfgp2p_stop_p2p_device(struct wiphy *wiphy, struct wireless_dev
 	if (rwnx_vif == rwnx_hw->p2p_dev_vif) {
 		rwnx_hw->is_p2p_alive = 0;
 		if (timer_pending(&rwnx_hw->p2p_alive_timer)) {
-			del_timer_sync(&rwnx_hw->p2p_alive_timer);
+			timer_delete_sync(&rwnx_hw->p2p_alive_timer);
 		}
 		if (rwnx_vif->up) {
 			rwnx_send_remove_if(rwnx_hw, rwnx_vif->vif_index, true);
@@ -3725,7 +3725,7 @@ static int rwnx_cfg80211_start_ap(struct wiphy *wiphy, struct net_device *dev,
  * @change_beacon: Change the beacon parameters for an access point mode
  *	interface. This should reject the call when AP mode wasn't started.
  */
-#if LINUX_VERSION_CODE > KERNEL_VERSION(6, 7, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 8, 0)
 static int rwnx_cfg80211_change_beacon(struct wiphy *wiphy, struct net_device *dev,
                                        struct cfg80211_ap_update *info)
 #else
@@ -3745,7 +3745,7 @@ static int rwnx_cfg80211_change_beacon(struct wiphy *wiphy, struct net_device *d
 	elem.dma_addr = 0;
 
     // Build the beacon
-#if LINUX_VERSION_CODE > KERNEL_VERSION(6, 7, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 8, 0)
     buf = rwnx_build_bcn(bcn, &info->beacon);
 #else
     buf = rwnx_build_bcn(bcn, info);
@@ -3842,6 +3842,7 @@ cfg80211_chandef_identical(const struct cfg80211_chan_def *chandef1,
 #endif
 
 static int rwnx_cfg80211_set_monitor_channel(struct wiphy *wiphy,
+                                             struct net_device *dev,
                                              struct cfg80211_chan_def *chandef)
 {
     struct rwnx_hw *rwnx_hw = wiphy_priv(wiphy);
@@ -4367,7 +4368,7 @@ static int rwnx_cfg80211_get_channel(struct wiphy *wiphy,
     if (rwnx_vif->vif_index == rwnx_hw->monitor_vif)
     {
         //retrieve channel from firmware
-        rwnx_cfg80211_set_monitor_channel(wiphy, NULL);
+        rwnx_cfg80211_set_monitor_channel(wiphy, NULL, NULL);
     }
 
     //Check if channel context is valid
@@ -4547,11 +4548,12 @@ send_frame:
 static
 int rwnx_cfg80211_start_radar_detection(struct wiphy *wiphy,
                                         struct net_device *dev,
-                                        struct cfg80211_chan_def *chandef
-                                    #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 15, 0))
-                                        , u32 cac_time_ms
+                                        struct cfg80211_chan_def *chandef,
+                                        u32 cac_time_ms
+                                    #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0))
+                                    , int radar_cac_time_ms
                                     #endif
-                                        )
+                                    )
 {
     struct rwnx_hw *rwnx_hw = wiphy_priv(wiphy);
     struct rwnx_vif *rwnx_vif = netdev_priv(dev);
@@ -8540,7 +8542,7 @@ static void __exit rwnx_mod_exit(void)
 module_init(rwnx_mod_init);
 module_exit(rwnx_mod_exit);
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)
-MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver);
+// MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver);
 #endif
 MODULE_FIRMWARE(RWNX_CONFIG_FW_NAME);
 
