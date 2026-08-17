@@ -1222,7 +1222,7 @@ static void rwnx_set_he_capa(struct rwnx_hw *rwnx_hw, struct wiphy *wiphy)
     #endif
     if (rwnx_hw->mod_params->stbc_on)
         he_cap->he_cap_elem.phy_cap_info[2] |= IEEE80211_HE_PHY_CAP2_STBC_RX_UNDER_80MHZ;
-	#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 13, 0)
+	#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
     he_cap->he_cap_elem.phy_cap_info[3] |= IEEE80211_HE_PHY_CAP3_DCM_MAX_CONST_RX_16_QAM |
                                            IEEE80211_HE_PHY_CAP3_DCM_MAX_RX_NSS_1 |
                                            IEEE80211_HE_PHY_CAP3_RX_PARTIAL_BW_SU_IN_20MHZ_MU;
@@ -1238,7 +1238,7 @@ static void rwnx_set_he_capa(struct rwnx_hw *rwnx_hw, struct wiphy *wiphy)
     }
     he_cap->he_cap_elem.phy_cap_info[5] |= IEEE80211_HE_PHY_CAP5_NG16_SU_FEEDBACK |
                                            IEEE80211_HE_PHY_CAP5_NG16_MU_FEEDBACK;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 13, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
     he_cap->he_cap_elem.phy_cap_info[6] |= IEEE80211_HE_PHY_CAP6_CODEBOOK_SIZE_42_SU |
                                            IEEE80211_HE_PHY_CAP6_CODEBOOK_SIZE_75_MU |
                                            IEEE80211_HE_PHY_CAP6_TRIG_SU_BEAMFORMING_FB |
@@ -1352,7 +1352,7 @@ static void rwnx_set_he_capa(struct rwnx_hw *rwnx_hw, struct wiphy *wiphy)
     #endif
     if (rwnx_hw->mod_params->stbc_on)
         he_cap->he_cap_elem.phy_cap_info[2] |= IEEE80211_HE_PHY_CAP2_STBC_RX_UNDER_80MHZ;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 13, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
     he_cap->he_cap_elem.phy_cap_info[3] |= IEEE80211_HE_PHY_CAP3_DCM_MAX_CONST_RX_16_QAM |
                                            IEEE80211_HE_PHY_CAP3_DCM_MAX_RX_NSS_1 |
                                            IEEE80211_HE_PHY_CAP3_RX_PARTIAL_BW_SU_IN_20MHZ_MU;
@@ -1368,7 +1368,7 @@ static void rwnx_set_he_capa(struct rwnx_hw *rwnx_hw, struct wiphy *wiphy)
     }
     he_cap->he_cap_elem.phy_cap_info[5] |= IEEE80211_HE_PHY_CAP5_NG16_SU_FEEDBACK |
                                            IEEE80211_HE_PHY_CAP5_NG16_MU_FEEDBACK;
-	#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 13, 0)
+	#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
     he_cap->he_cap_elem.phy_cap_info[6] |= IEEE80211_HE_PHY_CAP6_CODEBOOK_SIZE_42_SU |
                                            IEEE80211_HE_PHY_CAP6_CODEBOOK_SIZE_75_MU |
                                            IEEE80211_HE_PHY_CAP6_TRIG_SU_BEAMFORMING_FB |
@@ -1466,7 +1466,7 @@ static void rwnx_set_he_capa(struct rwnx_hw *rwnx_hw, struct wiphy *wiphy)
 	    #endif
 	    if (rwnx_hw->mod_params->stbc_on)
 	        he_cap->he_cap_elem.phy_cap_info[2] |= IEEE80211_HE_PHY_CAP2_STBC_RX_UNDER_80MHZ;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 13, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
 	    he_cap->he_cap_elem.phy_cap_info[3] |= IEEE80211_HE_PHY_CAP3_DCM_MAX_CONST_RX_16_QAM |
 	                                           IEEE80211_HE_PHY_CAP3_DCM_MAX_RX_NSS_1 |
 	                                           IEEE80211_HE_PHY_CAP3_RX_PARTIAL_BW_SU_IN_20MHZ_MU;
@@ -1482,7 +1482,7 @@ static void rwnx_set_he_capa(struct rwnx_hw *rwnx_hw, struct wiphy *wiphy)
 	    }
 	    he_cap->he_cap_elem.phy_cap_info[5] |= IEEE80211_HE_PHY_CAP5_NG16_SU_FEEDBACK |
 	                                           IEEE80211_HE_PHY_CAP5_NG16_MU_FEEDBACK;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 13, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
 	    he_cap->he_cap_elem.phy_cap_info[6] |= IEEE80211_HE_PHY_CAP6_CODEBOOK_SIZE_42_SU |
 	                                           IEEE80211_HE_PHY_CAP6_CODEBOOK_SIZE_75_MU |
 	                                           IEEE80211_HE_PHY_CAP6_TRIG_SU_BEAMFORMING_FB |

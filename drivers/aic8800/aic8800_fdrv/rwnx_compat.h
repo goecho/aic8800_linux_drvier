@@ -27,6 +27,77 @@
 #error "Minimum kernel version supported is 3.10"
 #endif
 
+/* Kernel 6.x compatibility fixes */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
+/* cfg80211_ch_switch_notify signature changed in kernel 6.0 */
+#define cfg80211_ch_switch_notify(dev, chandef, count) \
+    cfg80211_ch_switch_notify(dev, chandef, count)
+
+/* ieee80211_amsdu_to_8023s signature changed in kernel 6.3 */
+#define ieee80211_amsdu_to_8023s(skb, list, addr, iftype, extra_headroom, check_da, check_sa, amsdu) \
+    ieee80211_amsdu_to_8023s(skb, list, addr, iftype, extra_headroom, check_da, check_sa, amsdu)
+
+/* cfg80211_change_beacon signature changed in kernel 6.8 */
+#define cfg80211_change_beacon(wiphy, dev, info) \
+    cfg80211_change_beacon(wiphy, dev, info)
+
+/* Thread info access changed in kernel 6.x */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
+#define CURRENT_CPU current->thread_info.cpu
+#else
+#define CURRENT_CPU current->cpu
+#endif
+
+/* sched_set_fifo_low availability check */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
+#define SCHED_FIFO_LOW_AVAILABLE 1
+#else
+#define SCHED_FIFO_LOW_AVAILABLE 0
+#endif
+
+/* Task state access changed in kernel 6.x */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
+#define TASK_STATE_ACCESS(task) task->__state
+#else
+#define TASK_STATE_ACCESS(task) task->state
+#endif
+
+/* sched_set_fifo_low function availability */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
+#define sched_set_fifo_low(task) sched_set_fifo_low(task)
+#else
+#define sched_set_fifo_low(task) do { \
+    struct sched_param param = { .sched_priority = 1 }; \
+    sched_setscheduler(task, SCHED_FIFO, &param); \
+} while (0)
+#endif
+
+/* IEEE80211_HE_PHY_CAP3 and IEEE80211_HE_PHY_CAP6 availability - only define if not already defined */
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 0, 0)
+#ifndef IEEE80211_HE_PHY_CAP3_DCM_MAX_CONST_RX_16_QAM
+#define IEEE80211_HE_PHY_CAP3_DCM_MAX_CONST_RX_16_QAM 0x01
+#endif
+#ifndef IEEE80211_HE_PHY_CAP3_DCM_MAX_RX_NSS_1
+#define IEEE80211_HE_PHY_CAP3_DCM_MAX_RX_NSS_1 0x02
+#endif
+#ifndef IEEE80211_HE_PHY_CAP3_RX_PARTIAL_BW_SU_IN_20MHZ_MU
+#define IEEE80211_HE_PHY_CAP3_RX_PARTIAL_BW_SU_IN_20MHZ_MU 0x04
+#endif
+#ifndef IEEE80211_HE_PHY_CAP6_CODEBOOK_SIZE_42_SU
+#define IEEE80211_HE_PHY_CAP6_CODEBOOK_SIZE_42_SU 0x01
+#endif
+#ifndef IEEE80211_HE_PHY_CAP6_CODEBOOK_SIZE_75_MU
+#define IEEE80211_HE_PHY_CAP6_CODEBOOK_SIZE_75_MU 0x02
+#endif
+#ifndef IEEE80211_HE_PHY_CAP6_TRIG_SU_BEAMFORMING_FB
+#define IEEE80211_HE_PHY_CAP6_TRIG_SU_BEAMFORMING_FB 0x04
+#endif
+#ifndef IEEE80211_HE_PHY_CAP6_TRIG_MU_BEAMFORMER_FB
+#define IEEE80211_HE_PHY_CAP6_TRIG_MU_BEAMFORMER_FB 0x08
+#endif
+#endif
+#endif
+
 /* Generic */
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 9, 0)
 #define __bf_shf(x) (__builtin_ffsll(x) - 1)
