@@ -1071,9 +1071,15 @@ static void rwnx_csa_finish(struct work_struct *ws)
         } else
             rwnx_txq_vif_stop(vif, RWNX_TXQ_STOP_CHAN, rwnx_hw);
         spin_unlock_bh(&rwnx_hw->cb_lock);
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0))
-        // For kernels version 6.0.0 and above (with 4 parameters)
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 12, 0))
+        // 6.12 onwards: punct_bitmap dropped again, back to 3 parameters
+        cfg80211_ch_switch_notify(vif->ndev, &csa->chandef, 0);
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 5, 0))
+        // 6.5-6.11: link_id plus punct_bitmap
         cfg80211_ch_switch_notify(vif->ndev, &csa->chandef, 0, 0);
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0))
+        // 6.0-6.4: link_id added, 3 parameters
+        cfg80211_ch_switch_notify(vif->ndev, &csa->chandef, 0);
 #elif (LINUX_VERSION_CODE >= HIGH_KERNEL_VERSION3)
         // Older kernel with 4 parameters (if such version exists)
         cfg80211_ch_switch_notify(vif->ndev, &csa->chandef, 0, 0);
@@ -4702,9 +4708,15 @@ int rwnx_cfg80211_channel_switch(struct wiphy *wiphy,
         goto end;
     } else {
         INIT_WORK(&csa->work, rwnx_csa_finish);
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0))
-        // For kernels version 6.0.0 and above (with 4 parameters)
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 12, 0))
+        // 6.12 onwards: punct_bitmap dropped again, back to 3 parameters
+        cfg80211_ch_switch_notify(vif->ndev, &csa->chandef, 0);
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 5, 0))
+        // 6.5-6.11: link_id plus punct_bitmap
         cfg80211_ch_switch_notify(vif->ndev, &csa->chandef, 0, 0);
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0))
+        // 6.0-6.4: link_id added, 3 parameters
+        cfg80211_ch_switch_notify(vif->ndev, &csa->chandef, 0);
 #elif (LINUX_VERSION_CODE >= HIGH_KERNEL_VERSION3)
         // Older kernel with 4 parameters (if such version exists)
         cfg80211_ch_switch_notify(vif->ndev, &csa->chandef, 0, 0);

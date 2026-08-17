@@ -22,17 +22,21 @@
 #ifndef _RWNX_COMPAT_H_
 #define _RWNX_COMPAT_H_
 #include <linux/version.h>
+#include <linux/preempt.h>
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0)
 #error "Minimum kernel version supported is 3.10"
 #endif
 
+/* The legacy in_irq() macro was removed from <linux/preempt.h>; in_hardirq()
+ * is the preferred spelling and has been available since 5.5. Tested by
+ * definition rather than version so it stays correct on backported trees. */
+#ifndef in_irq
+#define in_irq() in_hardirq()
+#endif
+
 /* Kernel 6.x compatibility fixes */
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
-/* cfg80211_ch_switch_notify signature changed in kernel 6.0 */
-#define cfg80211_ch_switch_notify(dev, chandef, count) \
-    cfg80211_ch_switch_notify(dev, chandef, count)
-
 /* ieee80211_amsdu_to_8023s signature changed in kernel 6.3 */
 #define ieee80211_amsdu_to_8023s(skb, list, addr, iftype, extra_headroom, check_da, check_sa, amsdu) \
     ieee80211_amsdu_to_8023s(skb, list, addr, iftype, extra_headroom, check_da, check_sa, amsdu)
