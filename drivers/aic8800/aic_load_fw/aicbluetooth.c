@@ -1223,11 +1223,38 @@ int aicbt_patch_table_load(struct aic_usb_dev *usbdev, struct aicbt_patch_table 
 
 int aicbt_patch_info_unpack(struct aicbt_patch_info_t *patch_info, struct aicbt_patch_table *head_t)
 {
+    uint8_t *patch_info_array = (uint8_t *)patch_info;
+    int base_len = 0;
+    int memcpy_len = 0;
+
     if (AICBT_PT_INF == head_t->type) {
-        patch_info->info_len = head_t->len;
-        if(patch_info->info_len == 0)
+        /* A patch table may carry an (ext_patch_nb_addr, ext_patch_nb) pair
+         * past the fields this driver knows, followed by ext_patch_nb
+         * (id, addr) pairs. Copy that pair too when it is there, and leave
+         * info_len at the length the rest of the driver expects. */
+        base_len = ((offsetof(struct aicbt_patch_info_t, ext_patch_nb_addr) -
+                     offsetof(struct aicbt_patch_info_t, adid_addrinf)) / sizeof(uint32_t)) / 2;
+        if (head_t->len > base_len) {
+            patch_info->info_len = base_len;
+            memcpy_len = patch_info->info_len + 1;
+        } else {
+            patch_info->info_len = head_t->len;
+            memcpy_len = patch_info->info_len;
+        }
+        head_t->len = patch_info->info_len;
+        if (patch_info->info_len == 0)
             return 0;
-        memcpy(&patch_info->adid_addrinf, head_t->data, patch_info->info_len * sizeof(uint32_t) * 2);
+        memcpy(patch_info_array + sizeof(patch_info->info_len),
+               head_t->data, memcpy_len * sizeof(uint32_t) * 2);
+        if (patch_info->ext_patch_nb > 0) {
+            int index;
+
+            patch_info->ext_patch_param = (uint32_t *)(head_t->data + (memcpy_len * 2));
+            for (index = 0; index < patch_info->ext_patch_nb; index++)
+                printk("%s ext patch id:%x addr:%x\n", __func__,
+                       *(patch_info->ext_patch_param + (index * 2)),
+                       *(patch_info->ext_patch_param + (index * 2) + 1));
+        }
     }
     return 0;
 }

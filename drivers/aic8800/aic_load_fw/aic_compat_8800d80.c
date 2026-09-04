@@ -314,6 +314,25 @@ int system_config_8800d80(struct aic_usb_dev *usb_dev){
 }
 
 
+static int __maybe_unused aicbt_ext_patch_data_load(struct aic_usb_dev *usb_dev,
+                                                    struct aicbt_patch_info_t *patch_info,
+                                                    const char *filename)
+{
+    char ext_patch_file_name[50];
+    uint32_t id, addr;
+    int index;
+
+    for (index = 0; index < patch_info->ext_patch_nb; index++) {
+        id = *(patch_info->ext_patch_param + (index * 2));
+        addr = *(patch_info->ext_patch_param + (index * 2) + 1);
+        snprintf(ext_patch_file_name, sizeof(ext_patch_file_name), "%s%d.bin", filename, id);
+        printk("%s %s id:%x addr:%x\n", __func__, ext_patch_file_name, id, addr);
+        if (rwnx_plat_bin_fw_upload_android(usb_dev, addr, ext_patch_file_name))
+            return -1;
+    }
+    return 0;
+}
+
 int aicfw_download_fw_8800d80(struct aic_usb_dev *usb_dev)
 {
     struct aicbt_patch_table *head = NULL;
@@ -327,6 +346,9 @@ int aicfw_download_fw_8800d80(struct aic_usb_dev *usb_dev)
         .reset_val         = 0,
         .adid_flag_addr    = 0,
         .adid_flag         = 0,
+        .ext_patch_nb_addr = 0,
+        .ext_patch_nb      = 0,
+        .ext_patch_param   = NULL,
     };
 
     int i = 0;
@@ -367,6 +389,9 @@ int aicfw_download_fw_8800d80(struct aic_usb_dev *usb_dev)
                 return -1;
             }
             if(rwnx_plat_bin_fw_upload_android(usb_dev, patch_info.addr_patch, FW_PATCH_BASE_NAME_8800D80_U02)) {
+                return -1;
+            }
+            if (aicbt_ext_patch_data_load(usb_dev, &patch_info, FW_PATCH_BASE_NAME_8800D80_U02_EXT)) {
                 return -1;
             }
             #if 0
