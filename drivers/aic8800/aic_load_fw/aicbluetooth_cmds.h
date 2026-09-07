@@ -67,6 +67,9 @@ struct aicbt_patch_info_t {
     uint32_t reset_val;
     uint32_t adid_flag_addr;
     uint32_t adid_flag;
+    uint32_t ext_patch_nb_addr;
+    uint32_t ext_patch_nb;
+    uint32_t *ext_patch_param;
 };
 
 

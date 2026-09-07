@@ -22,6 +22,7 @@
 #endif
 #define FW_RF_BASE_NAME_8800D80_U02         "lmacfw_rf_8800d80_u02.bin"
 #define FW_PATCH_BASE_NAME_8800D80_U02      "fw_patch_8800d80_u02.bin"
+#define FW_PATCH_BASE_NAME_8800D80_U02_EXT  "fw_patch_8800d80_u02_ext"
 #define FW_ADID_BASE_NAME_8800D80_U02       "fw_adid_8800d80_u02.bin"
 #define FW_CALIBMODE_NAME_8800D80_U02       "calibmode_8800d80.bin"
 #define FW_PATCH_TABLE_NAME_8800D80_U02     "fw_patch_table_8800d80_u02.bin"
