@@ -25,6 +25,7 @@
 #define USB_PRODUCT_ID_FAST             0x014f
 
 #define USB_PRODUCT_ID_TENDA            0x001f
+#define USB_PRODUCT_ID_TENDA_D80        0x0023
 
 #ifndef CONFIG_USB_BT
 #define USB_PRODUCT_ID_AIC8800			0x8800
