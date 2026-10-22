@@ -2073,7 +2073,7 @@ check_len_update:
         hdr = (struct ieee80211_hdr *)(skb->data + msdu_offset);
         rwnx_vif = rwnx_rx_get_vif(rwnx_hw, hw_rxhdr->flags_vif_idx);
         if (rwnx_vif) {
-            cfg80211_rx_spurious_frame(rwnx_vif->ndev, hdr->addr2, -1, GFP_ATOMIC);
+            cfg80211_rx_spurious_frame(rwnx_vif->ndev, hdr->addr2, RWNX_LINK_ID_ARG GFP_ATOMIC);
         }
         goto end;
     }
@@ -2169,7 +2169,7 @@ check_len_update:
 
                 if (hw_rxhdr->flags_is_4addr && !rwnx_vif->use_4addr) {
                     cfg80211_rx_unexpected_4addr_frame(rwnx_vif->ndev,
-                                                       sta->mac_addr, -1, GFP_ATOMIC);
+                                                       sta->mac_addr, RWNX_LINK_ID_ARG GFP_ATOMIC);
                 }
             }
 

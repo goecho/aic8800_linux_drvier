@@ -3959,7 +3959,7 @@ void rwnx_cfg80211_mgmt_frame_register(struct wiphy *wiphy,
  *	have changed. The actual parameter values are available in
  *	struct wiphy. If returning an error, no value should be changed.
  */
-static int rwnx_cfg80211_set_wiphy_params(struct wiphy *wiphy, int radio_idx, u32 changed)
+static int rwnx_cfg80211_set_wiphy_params(struct wiphy *wiphy, RWNX_RADIO_IDX_ARG u32 changed)
 {
     return 0;
 }
@@ -3976,7 +3976,7 @@ static int rwnx_cfg80211_set_tx_power(struct wiphy *wiphy,
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0)
  struct wireless_dev *wdev,
 #endif
-                                      int radio_idx, enum nl80211_tx_power_setting type, int mbm)
+                                      RWNX_RADIO_IDX_ARG enum nl80211_tx_power_setting type, int mbm)
 {
     #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0)
     struct wireless_dev *wdev = NULL;
@@ -4556,8 +4556,8 @@ int rwnx_cfg80211_start_radar_detection(struct wiphy *wiphy,
                                         struct net_device *dev,
                                         struct cfg80211_chan_def *chandef,
                                         u32 cac_time_ms
-                                    #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0))
-                                    , int radar_cac_time_ms
+                                    #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0))
+                                    , int link_id
                                     #endif
                                     )
 {

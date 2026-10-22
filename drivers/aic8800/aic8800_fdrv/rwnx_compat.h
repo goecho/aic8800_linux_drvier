@@ -35,6 +35,24 @@
 #define in_irq() in_hardirq()
 #endif
 
+/* These specific cfg80211 entry points only gained radio_idx / link_id in
+ * 6.17 (checked against v6.8 .. v6.19 include/net/cfg80211.h); other ops
+ * such as stop_ap carry link_id much earlier, so keep this per call site.
+ *
+ * The position differs between the two groups: link_id is the last argument
+ * of cfg80211_cac_event() but comes before gfp in cfg80211_rx_*_frame(),
+ * hence the two different helpers. RWNX_RADIO_IDX_ARG must be inserted in
+ * the middle of a parameter list, never at its end. */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0)
+#define RWNX_RADIO_IDX_ARG      int radio_idx,
+#define RWNX_LINK_ID_ARG        -1,
+#define RWNX_CAC_LINK_ID_ARG    , 0
+#else
+#define RWNX_RADIO_IDX_ARG
+#define RWNX_LINK_ID_ARG
+#define RWNX_CAC_LINK_ID_ARG
+#endif
+
 /* Kernel 6.x compatibility fixes */
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
 /* ieee80211_amsdu_to_8023s signature changed in kernel 6.3 */
