@@ -23,6 +23,8 @@
 #define USB_VENDOR_ID_AIC               0xA69C
 #define USB_DEVICE_ID_AIC               0x8800
 #define USB_DEVICE_ID_AIC_8801		    0x8801
+#define USB_VENDOR_ID_AIC_USB		    0x368b
+#define USB_DEVICE_ID_AIC_8800D81X2	    0x8d81
 
 #define CHIP_REV_U01        0x1
 #define CHIP_REV_U02        0x3
